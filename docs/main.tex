@@ -1,0 +1,197 @@
+\documentclass[letterpaper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\title{A Measurement Error Model \\of Democracy Status}
+
+\author{Jay Ulfelder and Sean J. Taylor}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We use a Bayesian measurement error model to derive a probabilistic measure of democracy from several existing dichotomous data sets. This approach accepts the premise that democracy may usefully be construed as a bivalent concept for certain theoretical and technical purposes, but it also makes more explicit our collective uncertainty about where some cases fall in that binary scheme. We believe the resulting data provide a firmer foundation than measures of countries' degree of democracy for studies that require a dichotomous measure of regime type.
+\end{abstract}
+
+\section{Introduction}
+
+Political scientists use the term “regime type” to refer to the formal and informal structure of a country’s government\textendash more specifically, how rulers are selected and how their authority is organized and exercised. Over the past 25 years or so, scholars have devoted particular attention to measuring democracy as a regime type. The widely used Polity IV data set treats democracy as a scalar concept, but several other projects assert that democracy may usefully be construed as a bivalent concept and therefore adopt a dichotomous approach to measuring it (e.g., Boix et al 2012 \cite{boix}, Cheibub et al 2010 \cite{cheibub}, Goldtsone et al. 2010 \cite{pitf}, and Ulfelder 2012 \cite{ulfelder}). These dichotomous measures and ones like them have been used in a number of influential studies on regime survival and other things that a country’s regime type is expected to affect.
+
+Unfortunately, those dichotomous data sets also obscure significant uncertainty about whether or not certain cases qualify as democracies. Specific countries at specific times are identified as falling on one side or the other of that line, even when researchers knowledgeable about those cases might be unsure or disagree about where they belong. For example, all of the existing data sets concur that Norway is a democracy and Saudi Arabia is not, but they diverge on the classification of countries like Russia, Venezuela, and Pakistan, and rightly so. Some of the features we need to measure to make judgments about whether or not a regime is democratic\textendash for example, freedoms of speech, assembly, and association\textendash are inherently hard to observe, and it’s not exactly clear how much is enough to qualify. Other features, such as electoral fraud, are hard to observe because political actors respond to strong incentives to hide them. These measurement challenges don’t negate the validity of a bivalent concept of democracy, but they do mean that our judgments about whether or not that concept is present in specific cases will often be uncertain.
+
+As it happens, the degree of our uncertainty about where a case belongs may itself be correlated with many of the things that researchers use data on regime type to study. As a result, findings and forecasts derived from those data are likely to be sensitive to those bivalent calls in ways that are hard to understand when that uncertainty is ignored. In principle, it should be possible to make that uncertainty explicit by reporting the probability that a case belongs in a specific set instead of making a firm yes/no decision, but that’s not what the data sets we have now do.
+
+To address this shortcoming, we use a Bayesian measurement error model to derive a probabilistic measure of democracy from several existing dichotomous data sets. This approach accepts the premise that democracy may usefully be construed as a bivalent concept for certain theoretical and technical purposes , but it makes explicit our uncertainty about where some cases fit in that either/or scheme. Instead of 0s and 1s, we end up with estimated probabilities of membership in the democracy set and confidence intervals associated with those estimates. We don’t create new information about the features of countries’ political regimes. Instead, we draw on previously created information to newly quantify our collective uncertainty about the presence or absence of democracy. We believe the resulting data can serve as a firmer foundation for studies that depend on a dichotomous measure of this particular regime type.
+
+Pemstein, Melton, and Meserve (2010) \cite{uds} use the same technique to produce the Unified Democracy Scores. Our method is very similar, but the underlying concept, and thus the results, differ in an important way. Their approach treats democracy as a matter of degree and derives a composite scalar index of democracy-ness from several measures. By contrast, we accept a binary conceptualization of democracy and estimate the probability that a country belongs in that set.
+
+In fuzzy set theory (Zadeh 1965) \cite{zadeh}, this probability represents a case’s degree of membership in the democracy set, not how democratic it is. The distinction between a country’s degree of membership in that set and its degree of democracy is subtle but meaningful, and the former will sometimes be a better fit for an analytic task than the latter. As Collier and Adcock (1999) \cite{collier} argue, “How scholars understand and operationalize [democracy] can and should depend in part on what they are going to do with it.” In other words, the choice of measures depends, in part, on the aims and design of the ensuing research. If a researcher needs to distinguish categorically between democracies and non-democracies in order to estimate differences in some other quantity across the two sets \textemdash or to analyze life courses within one of those sets, as one does with event history analysis \textemdash it makes more sense to base that split on a probabilistic measure of set membership than on an arbitrarily chosen cut point on a scalar measure of democracy. We still have to choose a break point to distinguish between categories, but p > 0.5 has a natural interpretation (“probably a democracy”) that suits the task in a way that an arbitrary cut point on an index does not. And, of course, we can still perform sensitivity analyses by moving the break point and seeing how much our estimates change as a result.
+
+\section{Methods}
+
+Imagine that you have a set of cases that may or may not belong in some category of interest\textendash here, democracy. Now imagine that you’ve got a set of experts who vote up or down on the membership status of each of those cases and sometime disagree. We can get a simple estimate of the probability that a given case belongs in the set of interest by converting the experts’ up or down votes to 1s and 0s and then averaging the series, and that’s not necessarily a bad idea.
+
+If, however, we suspect that some experts are more error prone than others, and that those errors follows certain patterns, then we can do better by gleaning those patterns and adjusting the averages accordingly. That’s exactly what the Bayesian measurement error model does. It compares the experts’ votes across the entirety of the data, estimates the extent to which each one is in agreement or at odds with the others, and treats that variance as an estimate of each experts’ error rate. This error rate, in turn, is used to weight the contribution of each experts’ vote when calculating the posterior estimate of each case’s status. Instead of an unweighted average of the experts’ votes, we get something like a weighted average, where the weights are inversely proportional to the size of each experts’ apparent error rate. This inverse-error-rate-weighted average of the expert signals should be more reliable than the unweighted version, if the assumption that there is systematic bias in the experts’ judgments is largely correct.
+
+\subsection{Model Description}
+
+Formally, let each country's (indexed by $i$) true, unobserved probability of democracy at the end of year $t$ be denoted $d_{it} \in (-\infty,\infty)$.  Let $\mbox{Logit}^{-1}(d_{it})$ represent the unconditional probability that any given expert would say that the country is democratic.  As $d_{it}$ approaches $\infty$, any observer would agree that the country is democratic and as it in approaches $\infty$ any observer would agree that the country is not.  For interpretability, we report $\mbox{Logit}^{-1}(d_{it})$ instead of $d_{it}$ in our results, but the underlying state uses an unbounded scale for estimation.
+
+We have a pool of experts indexed by $j$.  Each year, each expert observes whether the country is democratic by reporting a binary label $d_{it}^j \in \{0,1\}$. We assume their label is produced by the following process:
+
+\[  d_{it}^j = \mbox{Bernoulli}(\mbox{Logit}^{-1} (
+       \frac{d_{it}}{\sigma_j} + \alpha_j
+       ))
+\]
+
+Here $\alpha_j$ represents the bias in expert $j$'s signal. Higher values correspond to overstating the level of democracy in a country.  The precision parameter $\sigma_j$ represents how precisely the expert's signal corresponds to reality.  As it increases, the expert's signal is more likely to be a biased coin flip rather than information with respect to $d_{it}$.  The best possible expert will have $\alpha_j = 0$ and $\sigma_j = 1$.  
+
+For identification, we assume that no expert's signal is systematically wrong: $\sigma_j > 0$.  Without this assumption, there are two possible values for $d_{it}$ rationalized by any given set of expert labels: one in which most of the experts are right, and one in which most of them are wrong.
+
+We seek to infer parameters $(d_{it}, \alpha_j, \sigma_j)$ from observed labels $d_{it}^j$.  In order to close the model, we need to make assumptions about the prior distribution of these parameters.  For the expert characteristics, we assume uninformative priors with some reasonable bounds, corresponding to the assumptions that no expert is too biased or noisy.
+
+\[ \alpha_j \sim \mbox{Uniform}(-1, 1) \]
+
+\[ \sigma_j \sim \mbox{Uniform}(0.5, 10) \]
+
+For the latent state $d_{it}$, we explore a few different sets of assumptions.  Each one imposes different structure on how the democracy state variable evolves over time, yielding more or less precision in the estimates at the cost of imposing potentially incorrrect assumptions.
+
+\subsubsection{No model for democracy}
+
+\[
+  d_{it} \sim \mbox{Uniform}(-10, 10)
+\]
+
+Each country-year is a random draw with no structure whatsoever.
+
+\subsubsection{Static Country Distributions}
+
+\[
+  d_{it} \sim \mbox{Normal}(\mu_i, \nu_i)
+\]
+
+
+Each country has a mean level of democracy $\mu_i$ and stability in democracy $\nu_i$ which is constant through time, and each period's level of democracy is a draw from this distribution.
+
+\subsubsection{Country Random Walks}
+
+\[
+  d_{i1} \sim \mbox{Cauchy}(0, \lambda)
+\]
+
+\[
+  d_{it} = d_{i,t-1} + \epsilon_{it}
+\]
+
+\[
+  \epsilon_{it} \sim \mbox{Cauchy}(0, \nu)
+\]
+
+Each country is born in period $1$ with a level of democracy that is determined by a draw from the Cauchy distribution with median 0 and scale parameter $\lambda$.  In subsequent periods, their levels of democracy receive a shock distributed with a median $0$ Cauchy distribution with a different scale. 
+
+\subsection{Data Sources}
+
+For inputs to our measurement error model, we compiled binary measures of democracy from the following five country-year data sets, all of which define the underlying concept in similar fashion.
+
+\begin{itemize}
+\item Cheibub, Gandhi, and Vreeland’s Democracy and Dictatorship Dataset (Cheibub et al. 2010) \cite{cheibub}, which covers the period 1946\textendash 2008 and defines democracies as “regimes in which governmental offices are filled as a consequence of contested elections.”
+\item The “complete dataset of political regimes” developed by Boix, Miller, and Rosato (2012) \cite{boix}, which covers the period 1800\textendash 2007. They code as democracies cases in which “decisions to govern the state are taken through voting procedures that are free and fair” and a majority of the male population may vote. 
+\item A binary indicator of democracy derived from Polity IV using the Political Instability Task Force’s coding rules as described in Goldstone et al. (2010) \cite{pitf}. Here, a country is considered a democracy if its chief executive is chosen in competitive elections (EXREC equal to 7 or 8) and political competition is not suppressed (PARCOMP of 0 or greater than 2). Polity IV covers the period 1800\textendash 2013, so this series does, too.
+\item The Democracy/Autocracy Dataset created by Ulfelder (2012) \cite{ulfelder} and covering the period 1955\textendash 2010. In this data set, democracy is defined as “a form of government in which a free citizenry fairly chooses and routinely holds accountable its rulers.” That condition, in turn, is said to exist when elected officials rule, elections are fair and competitive, politics is inclusive, and civil liberties are protected.
+\item The lists of electoral democracies in Freedom House’s annual Freedom in the World reports \cite{fh}. Freedom House only began producing this list in 1989, but it has been updated annually since then and currently runs through 2013. Its coding rules focus on regular, competitive elections, the absence of “massive” voter fraud, and universal adult suffrage.
+\end{itemize}
+
+In estimating our measurement model, we decided to make no prior assumptions about the five sources’ relative reliability. Different users might prefer to make stronger assumptions about the sources’ relative error rates, and those assumptions would have some effect on the resulting estimates. Absent a compelling prior reason to trust some sources’ coding decisions more than others, however, we chose to treat observed divergence from the central tendency as our best estimate of each source’s error rate.
+
+\section{Results}
+
+\subsection{Estimates of Bias and Variance}
+
+Discuss estimates of bias and variance for the five sources.
+
+\subsection{Country-Year Estimates}
+
+Figure 1 is a histogram of the estimates for the period 1955\textemdash 2008, the years for which we have inputs from at least four of the five source data sets. Reassuringly, the distribution has the expected shape. Most countries most of the time are confidently identified as democracies (p approximately 1) or non-democracies (p approximately 0), but the membership status of a non-trivial subset of cases is more uncertain. Also, because this data summarized in this histogram span most of the second half of the twentieth century, we should expect to see \textemdash and do \textemdash that country-years of non-democracy outnumber country-years of democracy. If we were to restrict the period of observation to the post \textendash Cold War period, the balance would shift in favor of democracies, albeit only marginally. 
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{demscores_histogram_nomod.pdf}
+    \caption{Histogram of Probabilities of Democracy, 1955\textendash 2008, as Estimated by Measurement Model}
+    \label{fig:histogram}
+\end{figure}
+
+Figure 2 shows the mean probability of democracy for all regions of the world for each year during the period 1960 \textendash 2008. The most striking feature of this plot is the upward trend over time that begins in the early 1970s \textemdash the start of what Huntington (1991) \cite{huntington} dubbed the "third wave" of democratization \textemdash in all but two regions, the exceptions being South and Central Asia and the Middle East and North Africa. By the late 2000s, nearly all countries in the Americas and Europe and Eurasia are confidently identified as democracies. By contrast, the mean condition in sub-Saharan Africa, East Asia and the Pacific, and South and Central Asia is ambiguity, with regional averages of approximately 50 percent. The Middle East and North Africa is the clear outlier, with a regional mean close to 0 and very little variation over the 50-year period of observation.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{demscores_lineplot_mean_by_region.pdf}
+    \caption{Mean Probability of Democracy by Region and Year, 1960\textendash 2008}
+    \label{fig:region_lines}
+\end{figure}
+
+Figure 3 drills down even further, comparing scores for seven of the countries that gained independence as the Soviet Union disintegrated in 1991. For purposes of this visualization, we limited the plot to the states in that region that have exhibited more variation over the ensuing 20-plus years. According to estimates from our model, the eight other post-Soviet states are either confidently identified since 1991 as democracies (Estonia, Latvia, and Lithuania) or non-democracies (Azerbaijan, Kazakhstan, Uzbekistan, Tajikistan, and Turkmenistan), so we left them off the chart to avoid clutter.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{demscores_lineplot_fsu_nomod_four.pdf}
+    \caption{Estimated Annual Probabilities of Democracy for Selected Soviet Successor States, 1991\textendash 2008}
+    \label{fig:fsu_lines}
+\end{figure}
+
+As they should, the sharp bends in estimated scores correspond to recognizable events. For example, Georgia’s status is ambiguous and trending less likely until the Rose Revolution of 2003, after which point it’s probably but not certainly a democracy, and the trend bends down again soon thereafter as Mikhail Saakashvili's United National Movement quickly consolidated power. Meanwhile, Russia is identified as a likely democracy after gaining independence, but its status becomes uncertain as power passes from Yeltsin to Putin and then solidifies as a likely non-democracy around the flawed legislative elections of 2003. Finally, Kyrgystan is the lone case in this chart that began the period as a near-certain non-democracy but showed significant variation over the ensuing 20 years. It bumps into the ambiguous middle after general elections in 1995, only to fall back near 0 after incumbent Askar Akayev won a second term in flawed balloting in 2000. Kyrgystan jumps back into more uncertain territory after the Tulip Revolution of 2005 and nudges across the 0.5 threshold a few years later.
+
+We can also compare our model's estimates of the \textit{probability} of democracy with the estimates of countries' \textit{degree} of democracy that Pemstein et al. (2010) \cite{uds} get from their measurement model (i.e., the Unified Democracy Scores). Figure 4 is a scatter plot of observations from the two data sets for the period 1955 \textendash 2008. Unsurprisingly, the two series are highly correlated (coeff). At the same time, we can also see that there are some real differences between them, especially at the edges. The smears of points along the 0 and 1 lines show that there is substantial variation in the degree of democracy among cases that our model confidently identifies as democracies or non-democracies in a categorical sense. This variation at the edges is relevant to analyses concerned with observing or estimating the effects of differences in countries' degree of democracy, but it is not germane to analyses concerned with democracy as distinct regime type. What's more, the fact that some countries with p(democracy) approximately 1 have UDS < 0 and some with p(democracy) approximately 0 have UDS > 0 suggests that the two series are not interchangeable. A categorical measure of democracy derived from UDS > 0 will not produce the same strata as one derived from p(democracy) > 0.5. In other words, the choice of measures matters (cf. Casper and Tufis 2003 \cite{casper}, Wilson 2013 \cite{wilson}) and we believe that, for conceptual or practical reasons, ours is more appropriate for research in which democracy is treated as a matter of kind rather than degree.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{demscores_uds_compare_scatter.pdf}
+    \caption{Comparison of Probabilities of Democracy and Unified Democracy Scores, 1955\textendash 2008}
+    \label{fig:uds_compare}
+\end{figure}
+
+\section{Conclusion}
+
+We have described the motivation behind, design of, and output from a Bayesian measurement error model of countries' categorical status as democracies or non-democracies. As we have noted throughout the paper, this approach accepts the premise that it is sometimes useful to construe democracy as a binary concept, but our model also makes more explicit our uncertainty about where many cases fall in the resulting two-part typology. Instead of another batch of 0s and 1s, we report probabilities of membership in the democracy set and the upper and lower bounds of confidence intervals associated with those estimates. We have not collected new information about the features of countries’ political regimes. Instead, we have drawn on information previously and painstakingly created by other researchers to  quantify our collective uncertainty about the presence or absence of democracy in countries over time.
+
+We believe the resulting data provide a firmer foundation than measures of countries' degree of democracy for the many studies that require a dichotomous distinction between democracies and non-democracies. The approach we have used is flexible, so it can easily be expanded to include other dichotomous indicators of democracy as inputs. This technique could also be applied to other regime types, such as military or personal rule, for which categorical data already exist but don't always agree (cf. Geddes et al. (2014) \cite{geddes} and Wahman et al. (2013) \cite{wahman}).
+
+If they were routinely updated, these estimates could also be useful to applied statistical forecasters whose models depend on binary classification of political regimes. Instead of generating a single estimate based on a crisp categorization of each case, forecasters could generate two estimates for each case—one as a democracy and one as a non-democracy—and then calculate a weighted average of the two, where the weight is provided by the estimated probability of democracy. This ensemble approach is standard practice in meteorology and other fields because it makes sense and generally produces more accurate results, and we expect the same would hold in forecasts of political events such as coups d’état and onsets of civil war.
+
+\begin{thebibliography}{1}
+
+\bibitem{boix} Boix, Carles, Michael Miller, and Sebastian Rosato. 2012. “A Complete Dataset of Political Regimes, 1800-2007.” \textit{Comparative Political Studies} Vol. 46, No. 12, pp. 1523\textendash 1554.
+
+\bibitem{casper} Casper, Gretchen and Claudiu Tufis. 2003. “Correlation Versus Interchangeability: The Limited Robustness of Empirical Findings on Democracy Using Highly Correlated Data Sets.” \textit{Political Analysis} Vol. 11, No. 2, pp. 196\textendash 203.
+
+\bibitem{cheibub} Cheibub, José Antonio, Jennifer Gandhi, and James Raymond Vreeland. 2010. “Democracy and Dictatorship Revisited.” \textit{Public Choice}, Vol. 143, No. 2-1, pp. 67\textendash 101.
+
+\bibitem{collier} Collier, David and Robert Adcock. 1999. "Democracy and Dichotomies: A Pragmatic Approach to Choices about Concepts." \textit{Annual Review of Political Science} Vol. 2, pp. 537\textendash 565.
+
+\bibitem{fh} Freedom House. Various years. \textit{Freedom in the World}. Washington, DC.
+
+\bibitem{geddes} Geddes, Barbara, Joseph Wright and Erica Frantz. 2014. “Autocratic Breakdown and Regime Transitions: A New Data Set.” \textit{Perspectives on Politics} Vol. 12, No. 2 (June), pp. 313\textendash 331.
+
+\bibitem{pitf} Goldstone, Jack A., Robert H. Bates, David L. Epstein, Ted Robert Gurr, Michael B. Lustik, Monty G. Marshall, Jay Ulfelder, and Mark Woodward. 2010. “A Global Model for Forecasting Political Instability.” \textit{American Journal of Political Science} Vol. 54, No. 1 (January), pp. 190\textendash 208.
+
+\bibitem{huntington} Huntington, Samuel. 1991. \textit{The Third Wave: Democratization in the Late Twentieth Century}. Norman, OK: University of Oklahoma Press.
+
+\bibitem{polity} Marshall, Monty G. and Keith Jaggers. 2002. \textit{Polity IV Project: Political Regime Characteristics and Transitions, 1800\textendash 2002, Dataset Users’ Manual}. Center for International Development and Conflict Management, University of Maryland.
+
+\bibitem{uds} Pemstein, Daniel, Steven A. Meserve, and James Melton. 2010. “Democratic Compromise: A Latent Variable Analysis of Ten Measures of Regime Type.” \textit{Political Analysis}, pp. 1\textendash 24.
+
+\bibitem{ulfelder} Ulfelder, Jay. 2012. “Democracy/Autocracy Data Set,” http://hdl.handle.net/1902.1/18836 V1 [Version]
+
+\bibitem{wahman} Wahman, Michael, Jan Teorell and Axel Hadenius. 2013. "Authoritarian Regime Types Revisited: Updated Data in Comparative Perspective," \textit{Contemporary Politics}, Vol. 19, No. 1, pp. 19\textendash 34.
+
+\bibitem{wilson} Wilson, Matthew C. 2013. "A Discreet Critique of Discrete Regime Type Data." \textit{Comparative Political Studies} Vol. 47, No. 5, pp. 689\textendash 714.
+
+\bibitem{zadeh} Zadeh, Lofti. 1965. “Fuzzy sets.” \textit{Information Control} Vol. 8, pp. 338\textendash 353.
+
+\end{thebibliography}
+
+\end{document}

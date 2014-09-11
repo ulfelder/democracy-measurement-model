@@ -1,0 +1,5 @@
+
+import pandas as pd
+from pystan import Stan
+
+df = pd.read_csv('democracies.csv')

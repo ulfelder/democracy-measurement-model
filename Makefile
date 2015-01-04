@@ -4,10 +4,13 @@ data.out/%_democracy_scores.csv: data.in/democracies.csv
 figs/%_expert_scores.pdf: data.out/%_expert_scores.csv
 	Rscript r/plot_experts.R --outfile=$@ --infile=$<
 
+figs/expert_comparison.pdf: data.out/iid_expert_scores.csv data.out/iid_country_expert_scores.csv data.out/autocorr_expert_scores.csv
+	Rscript r/plot_experts_comparison.R --outfile=$@ --models=iid,iid_country,autocorr
+
 figs/%_democracy_scores.pdf: data.out/%_democracy_scores.csv
 	Rscript r/plot_democracies.R --outfile=$@ --infile=$< --countries=UKR,GRG,RUS,KYR,ARM,BLR
 
-all: figs/iid_democracy_scores.pdf figs/autocorr_democracy_scores.pdf figs/iid_expert_scores.pdf figs/autocorr_expert_scores.pdf
+all: figs/iid_democracy_scores.pdf figs/iid_country_democracy_scores.pdf figs/autocorr_democracy_scores.pdf figs/iid_expert_scores.pdf figs/iid_country_expert_scores.pdf figs/autocorr_expert_scores.pdf
 
 clean:
 	rm data.out/*.csv

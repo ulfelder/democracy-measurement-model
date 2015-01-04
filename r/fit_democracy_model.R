@@ -56,6 +56,8 @@ fit <- stan(fn,
 ## country.var <- extract(fit, 'country_var')[['country_var']]
 ## time.var <- extract(fit, 'time_var')[['time_var']]
 
+save(fit, file = paste('cache/', opt$model, 'fit.RData', sep=''))
+
 ## expert parameters
 expert.biases <- melt(extract(fit, 'expert_bias')[['expert_bias']]) %>%
   select(rep = iterations, expert = Var2, value) %>%

@@ -23,10 +23,10 @@ parameters {
   // encodes expert bias
   // <0 underpredicts democracy
   // >0 overpredicts democracy
-  real<lower=-1,upper=1> expert_bias[num_experts];
+  real<lower=-2,upper=2> expert_bias[num_experts];
 
   // noise with which an expert observes democracy
-  real<lower=0.5,upper=10> expert_var[num_experts];
+  real<lower=0.1,upper=10> expert_var[num_experts];
 
   // a big matrix encoding our ground truth democracy measure
   real democracy[num_countries,num_years];

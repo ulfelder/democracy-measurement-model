@@ -32,16 +32,17 @@ parameters {
   real democracy[num_countries,num_years];
 
   // country-level means
-  real country_mean[num_countries];
-  real<lower=0> country_var[num_countries];
+  real<lower=-10,upper=10> country_mean[num_countries];
+  real<lower=0.1> country_var[num_countries];
 }
 
 model {
   // draw the true values for democracy for each country/year
   for (c in 1:num_countries) {
-
     democracy[c] ~ normal(country_mean[c], country_var[c]);
-
+    //for(y in 1:num_years) {
+    //  democracy[c,y] ~ normal(country_mean[c], country_var[c]);
+    //}
   }
 
   // now draw experts observations

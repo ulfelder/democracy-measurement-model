@@ -8,7 +8,7 @@ figs/expert_comparison.pdf: data.out/iid_expert_scores.csv data.out/iid_country_
 	Rscript r/plot_experts_comparison.R --outfile=$@ --models=iid,iid_country,autocorr
 
 figs/%_democracy_scores.pdf: data.out/%_democracy_scores.csv
-	Rscript r/plot_democracies.R --outfile=$@ --infile=$< --countries=UKR,GRG,RUS,KYR,ARM,BLR --start-year=1990
+	Rscript r/plot_democracies.R --outfile=$@ --infile=$< --countries=UKR,GRG,RUS,KYR,ARM,BLR,MLD --start-year=1990
 
 figs/iid_country_params.pdf: data.in/democracies.csv
 	Rscript r/plot_iid_country_params.R --outfile=$@ --infile=$< --countries=UKR,GRG,RUS,KYR,ARM,BLR

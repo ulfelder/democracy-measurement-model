@@ -12,13 +12,18 @@ option_list <- list(
     ,make_option(c("--countries"), type="character",
         default = 'UKR,GRG,RUS,KYR,ARM,BLR',
         dest="countries")
+    ,make_option(c("--start-year"), type="integer",
+        default = 1990,
+        dest="startyear")
     )
 opt <- parse_args(OptionParser(option_list=option_list))
 countries <- unlist(strsplit(opt$countries, ","))
 
 democracy <- read.csv(opt$infile)
 
-p <- ggplot(democracy %>% filter(country %in% countries), aes(x = year, y = demo, ymin = lcl, ymax = ucl)) +
+p <- democracy %>%
+  filter(country %in% countries, year >= opt$startyear) %>%
+  ggplot(aes(x = year, y = demo, ymin = lcl, ymax = ucl)) +
   geom_smooth(stat = 'identity') +
   facet_grid(country ~ .) +
   theme_bw()

@@ -1,5 +1,5 @@
 # DEMOCRACY SCORES EXPLORING
-# 2014-09-10
+# 2015-02-04
 
 # Clear the workspace
 rm(list=ls(all=TRUE))
@@ -11,7 +11,7 @@ setwd("c:/users/jay/documents/democracy-measurement-model/")
 library(reshape)
 library(DataCombine)
 library(plyr)
-library(rworldmap)
+library(scales)
 wd <- getwd()
 source(paste0(wd, "/r/countryyear.utilities.r"))
 
@@ -77,12 +77,42 @@ plot(scores$nomod.p, scores$auto.p)
 plot(scores$iid.p, scores$nomod.p)
 dev.off()
 
-# HISTOGRAM OF SERIES
+# HISTOGRAMS OF SERIES
+pdf(paste0(wd, "/figs/demscores.histogram.autocorr.pdf"), width=4, height=4, bg='white')
+par(mai=c(1,1,0.25,0.25))
+par(cex.axis = 0.7, cex.main = 0.8)
+hist(scores$auto.p[scores$four==1], breaks = seq(0,1,0.1),
+  col = "gray50", border = "white", main = "", xlab = "Probability of Democracy", axes = FALSE)
+axis(2, las = 2, tick = FALSE, line = -0.75)
+axis(1, at = c(0, 0.5, 1), tick = FALSE, line = -0.75)
+dev.off()
+
 pdf(paste0(wd, "/figs/demscores.histogram.nomod.pdf"), width=4, height=4, bg='white')
 par(mai=c(1,1,0.25,0.25))
 par(cex.axis = 0.7, cex.main = 0.8)
 hist(scores$nomod.p[scores$four==1], breaks = seq(0,1,0.1),
   col = "gray50", border = "white", main = "", xlab = "Probability of Democracy", axes = FALSE)
+axis(2, las = 2, tick = FALSE, line = -0.75)
+axis(1, at = c(0, 0.5, 1), tick = FALSE, line = -0.75)
+dev.off()
+
+pdf(paste0(wd, "/figs/demscores.histogram.iid.pdf"), width=4, height=4, bg='white')
+par(mai=c(1,1,0.25,0.25))
+par(cex.axis = 0.7, cex.main = 0.8)
+hist(scores$iid.p[scores$four==1], breaks = seq(0,1,0.1),
+  col = "gray50", border = "white", main = "", xlab = "Probability of Democracy", axes = FALSE)
+axis(2, las = 2, tick = FALSE, line = -0.75)
+axis(1, at = c(0, 0.5, 1), tick = FALSE, line = -0.75)
+dev.off()
+
+# DENSITY PLOT
+d.auto <- with(scores, density(auto.p, from=0, to=1))
+d.iid <- with(scores, density(iid.p))
+d.nomod <- with(scores, density(nomod.p))
+pdf(paste0(wd, "/figs/demscores.densities.pdf"), width=4, height=4, bg='white')
+par(mai=c(1,1,0.25,0.25))
+par(cex.axis = 0.7, cex.main = 0.8)
+plot(d.auto, col="black", lwd=1, main="", xlab="Probability of Democracy", axes=FALSE)
 axis(2, las = 2, tick = FALSE, line = -0.75)
 axis(1, at = c(0, 0.5, 1), tick = FALSE, line = -0.75)
 dev.off()
@@ -120,48 +150,49 @@ lines(scores.fsu$nomod.p[scores.fsu$sftgcode=="MLD"], lwd = 1.5, col = "darkoran
 text(x = 18, y = scores.fsu$nomod.p[scores.fsu$sftgcode=="MLD" & scores.fsu$year==2008], "Moldova", col = "darkorange", pos = 4, cex = 0.75)
 dev.off()
 
-# MEAN PROBABILITY OF DEMOCRACY BY REGION AND YEAR
+# MEAN PROBABILITY OF DEMOCRACY BY REGION AND YEAR, AUTOCORRELATION MODEL
 # Create data frame with annual means by region
-regionmean <- ddply(subset(scores, year >= 1960 & year <= 2008), .(dosreg, year),
-  summarize, mean = mean(nomod.p, na.rm = TRUE))
+regionmean.auto <- ddply(subset(scores, year >= 1960 & year <= 2008), .(dosreg, year),
+  summarize, mean = mean(auto.p, na.rm = TRUE))
 # Plot the results
-pdf(paste0(wd, "/figs/demscores.lineplot.mean.by.region.pdf"), width=6, height=4, bg='white')
+pdf(paste0(wd, "/figs/demscores.lineplot.mean.by.region.autocorr.pdf"), width=6, height=4, bg='white')
 par(mar = c(3,2,1,5))
 par(cex.axis = 0.5)
 par(xpd = NA) # To let text spill over the boundaries of the plot area
-plot(regionmean$mean[regionmean$dosreg=="Africa"], type = "n", ylim = c(0,1), xlab = "", ylab = "", axes = FALSE)
-segments(x0 = 1, y0 = 0, x1 = length(unique(regionmean$year)), y1 = 0, lwd = 0.5, col = "gray")
-segments(x0 = 1, y0 = 0.5, x1 = length(unique(regionmean$year)), y1 = 0.5, lwd = 0.5, col = "gray")
-segments(x0 = 1, y0 = 1, x1 = length(unique(regionmean$year)), y1 = 1, lwd = 0.5, col = "gray")
+plot(regionmean.auto$mean[regionmean.auto$dosreg=="Africa"], type = "n", ylim = c(0,1), xlab = "", ylab = "", axes = FALSE)
+segments(x0 = 1, y0 = 0, x1 = length(unique(regionmean.auto$year)), y1 = 0, lwd = 0.5, col = "gray")
+segments(x0 = 1, y0 = 0.5, x1 = length(unique(regionmean.auto$year)), y1 = 0.5, lwd = 0.5, col = "gray")
+segments(x0 = 1, y0 = 1, x1 = length(unique(regionmean.auto$year)), y1 = 1, lwd = 0.5, col = "gray")
 axis(2, at = c(0,0.5,1), labels = c("0", "0.50", "1"), las = 2, tick = FALSE, line = -1)
 axis(1, at = c(1,6,11,16,21,26,31,36,41,46), labels = c(1960,1965,1970,1975,1980,1985,1990,1995,2000,2005), las = 1, tick = FALSE, line = -1)
-lines(regionmean$mean[regionmean$dosreg=="Africa"], lwd = 1.5, col = "forestgreen")
-text(x = length(unique(regionmean$year)), y = regionmean$mean[regionmean$dosreg=="Africa" & regionmean$year==max(regionmean$year)],
+lines(regionmean.auto$mean[regionmean.auto$dosreg=="Africa"], lwd = 1.5, col = "forestgreen")
+text(x = length(unique(regionmean.auto$year)), y = regionmean.auto$mean[regionmean.auto$dosreg=="Africa" & regionmean.auto$year==max(regionmean.auto$year)],
   "Sub-Saharan Africa", col = "forestgreen", pos = 4, cex = 0.5)
-lines(regionmean$mean[regionmean$dosreg=="Americas"], lwd = 1.5, col = "red")
-text(x = length(unique(regionmean$year)), y = regionmean$mean[regionmean$dosreg=="Americas" & regionmean$year==max(regionmean$year)],
+lines(regionmean.auto$mean[regionmean.auto$dosreg=="Americas"], lwd = 1.5, col = "red")
+text(x = length(unique(regionmean.auto$year)), y = regionmean.auto$mean[regionmean.auto$dosreg=="Americas" & regionmean.auto$year==max(regionmean.auto$year)],
   "Americas", col = "red", pos = 4, cex = 0.5)
-lines(regionmean$mean[regionmean$dosreg=="East Asia & Pacific"], lwd = 1.5, col = "cornflowerblue")
-text(x = length(unique(regionmean$year)), y = regionmean$mean[regionmean$dosreg=="East Asia & Pacific" & regionmean$year==max(regionmean$year)],
+lines(regionmean.auto$mean[regionmean.auto$dosreg=="East Asia & Pacific"], lwd = 1.5, col = "cornflowerblue")
+text(x = length(unique(regionmean.auto$year)), y = regionmean.auto$mean[regionmean.auto$dosreg=="East Asia & Pacific" & regionmean.auto$year==max(regionmean.auto$year)],
   "East Asia & Pacific", col = "cornflowerblue", pos = 4, cex = 0.5)
-lines(regionmean$mean[regionmean$dosreg=="Europe & Eurasia"], lwd = 1.5, col = "gray50")
-text(x = length(unique(regionmean$year)), y = regionmean$mean[regionmean$dosreg=="Europe & Eurasia" & regionmean$year==max(regionmean$year)],
+lines(regionmean.auto$mean[regionmean.auto$dosreg=="Europe & Eurasia"], lwd = 1.5, col = "gray50")
+text(x = length(unique(regionmean.auto$year)), y = regionmean.auto$mean[regionmean.auto$dosreg=="Europe & Eurasia" & regionmean.auto$year==max(regionmean.auto$year)],
   "Europe & Eurasia", col = "gray50", pos = 4, cex = 0.5)
-lines(regionmean$mean[regionmean$dosreg=="Middle East & North Africa"], lwd = 1.5, col = "bisque4")
-text(x = length(unique(regionmean$year)), y = regionmean$mean[regionmean$dosreg=="Middle East & North Africa" & regionmean$year==max(regionmean$year)],
+lines(regionmean.auto$mean[regionmean.auto$dosreg=="Middle East & North Africa"], lwd = 1.5, col = "bisque4")
+text(x = length(unique(regionmean.auto$year)), y = regionmean.auto$mean[regionmean.auto$dosreg=="Middle East & North Africa" & regionmean.auto$year==max(regionmean.auto$year)],
   "Middle East & N. Africa", col = "bisque4", pos = 4, cex = 0.5)
-lines(regionmean$mean[regionmean$dosreg=="South & Central Asia"], lwd = 1.5, col = "darkorange")
-text(x = length(unique(regionmean$year)), y = regionmean$mean[regionmean$dosreg=="South & Central Asia" & regionmean$year==max(regionmean$year)],
+lines(regionmean.auto$mean[regionmean.auto$dosreg=="South & Central Asia"], lwd = 1.5, col = "darkorange")
+text(x = length(unique(regionmean.auto$year)), y = regionmean.auto$mean[regionmean.auto$dosreg=="South & Central Asia" & regionmean.auto$year==max(regionmean.auto$year)],
   "South & Central Asia", col = "darkorange", pos = 4, cex = 0.5)
 dev.off()
 
-# COMPARISON TO UNIFIED DEMOCRACY SCORES (4+ sources, no-model version)
-pdf(paste0(wd, "/figs/demscores.uds.compare.scatter.pdf"), width=4, height=4, bg='white')
-par(mar = c(4,4,1,1))
-par(cex.axis = 0.75)
-plot(x = scores$uds.mean[scores$four==1], y = scores$nomod.p[scores$four==1],
-  xlab = "UDS mean", ylab = "P(democracy)",
-  pch = 20, col = "black", axes = FALSE )
-axis(2, at = seq(0, 1, 0.25), labels = c("0", ".25", ".5", ".75", "1"), las = 2, tick = FALSE, line = -1)
+# COMPARISON TO UNIFIED DEMOCRACY SCORES (4+ sources, autocorrelation version)
+pdf(paste0(wd, "/figs/demscores.auto.uds.compare.scatter.pdf"), width=4, height=4, bg='white')
+par(mar = c(3,3,1,1))
+par(cex.axis = 0.75, cex.lab = 0.8)
+plot(x = scores$uds.mean[scores$four==1], y = scores$auto.p[scores$four==1],
+  xlab="", ylab="", pch = 20, col = alpha("black", 0.25), axes = FALSE )
 axis(1, at = seq(-2, 2, 1), las = 1, tick = FALSE, line = -1)
+axis(2, at = seq(0, 1, 0.25), labels = c("0", ".25", ".5", ".75", "1"), las = 2, tick = FALSE, line = -1) 
+mtext("Unified Democracy Score mean", side=1, line=1.5, cex=0.8)
+mtext("Probability of democracy", side=2, line=1.5, cex=0.8) 
 dev.off()

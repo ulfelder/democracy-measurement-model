@@ -26,6 +26,8 @@ p <- democracy %>%
   ggplot(aes(x = year, y = demo, ymin = lcl, ymax = ucl)) +
   geom_smooth(stat = 'identity') +
   facet_grid(country ~ .) +
-  theme_bw()
+  theme_bw() +
+  xlab('Year') +
+  ylab('Democracy Measure')
 
 ggsave(opt$outfile, plot = p)

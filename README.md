@@ -15,7 +15,7 @@ We generate two versions of our probabilistic measure of democracy status and th
 * One that imposes very little structure on the inference problem: `nomod.p`, `nomod.lcl`, `nomod.ucl`; and
 * Another that assumes some autocorrelation with country series while still allowing for sudden shifts: `auto.p`, `auto.lcl`, `auto.ucl`. 
 
-The data set also includes the binary indicators of democracy status the five source data sets:
+The data set also includes the binary indicators of democracy status from the five source data sets:
 
 * Cheibub, Gandhi, and Vreeland's Democracy and Dictatorship Revisited (`d.dd`)
 * Boix, Miller, and Rosato's Complete Dataset of Political Regimes (`d.bmr`)

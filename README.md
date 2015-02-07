@@ -1,10 +1,6 @@
 # Democracy Measurement Model
 
-This respository houses replication materials for "A measurement error model of democracy status" by Jay Ulfelder and Sean J. Taylor.
-
-The key task is to efficiently combine experts' annual assessments of countries' democratic status using a Bayesian model. 
-
-The country-year data set produced by these models is:
+This respository houses replication materials for "A measurement error model of democracy status" by Jay Ulfelder and Sean J. Taylor. The key task is to efficiently combine experts' annual assessments of countries' democratic status using a Bayesian model. The country-year data set produced by these models is:
 
 `data.out/democracy.scores.merged.csv`.
 

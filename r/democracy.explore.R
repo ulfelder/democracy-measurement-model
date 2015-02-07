@@ -15,15 +15,11 @@ library(scales)
 wd <- getwd()
 source(paste0(wd, "/r/countryyear.utilities.r"))
 
-# Ingest the three versions and prep them for merging with country-year rack
+# Ingest the two versions and prep them for merging with country-year rack
 auto <- read.csv(paste0(wd, "/data.out/autocorr_democracy_scores.csv"))
 auto$country <- as.character(auto$country)
 auto$X <- NULL
 names(auto) <- c("year", "sftgcode", "auto.p", "auto.lcl", "auto.ucl")
-iid <- read.csv(paste0(wd, "/data.out/iid_democracy_scores.csv"))
-iid$country <- as.character(iid$country)
-iid$X <- NULL
-names(iid) <- c("year", "sftgcode", "iid.p", "iid.lcl", "iid.ucl")
 nomod <- read.csv(paste0(wd, "/data.out/nomodel_democracy_scores.csv"))
 nomod$country <- as.character(nomod$country)
 nomod$X <- NULL
@@ -34,7 +30,6 @@ rack <- pitfcodeit(countryyearrackit(1945, 2013), "country")
 
 # Merge all the scores with the rack
 scores <- merge(rack, auto, all.x = TRUE)
-scores <- merge(scores, iid, all.x = TRUE)
 scores <- merge(scores, nomod, all.x = TRUE)
 scores <- MoveFront(scores, c("country", "sftgcode", "year"))
 rm(rack)
@@ -43,16 +38,16 @@ rm(rack)
 votes <- read.csv(paste0(wd, "/data.in/democracies.csv"))
 votes$country <- NULL
 votes$sftgcode <- as.character(votes$sftgcode)
-names(votes) <- c("sftgcode", "year", "d.pitf", "d.ulf", "d.fh", "d.mbr", "d.ddr")
+names(votes) <- c("sftgcode", "year", "d.pitf", "d.da", "d.fh", "d.bmr", "d.dd")
 scores <- merge(scores, votes, all.x = TRUE)
 
 # Create markers for years with votes from 5, 4, and 3 sources for easier subsetting
-scores$all <- ifelse(is.na(scores$d.pitf)==FALSE & is.na(scores$d.ulf)==FALSE & is.na(scores$d.fh)==FALSE &
-  is.na(scores$d.mbr)==FALSE & is.na(scores$d.ddr)==FALSE, 1, 0)
-scores$four <- ifelse(is.na(scores$d.pitf) + is.na(scores$d.ulf) + is.na(scores$d.fh) + is.na(scores$d.mbr) +
-  is.na(scores$d.ddr) <= 1, 1, 0)
-scores$three <- ifelse(is.na(scores$d.pitf) + is.na(scores$d.ulf) + is.na(scores$d.fh) + is.na(scores$d.mbr) +
-  is.na(scores$d.ddr) <= 2, 1, 0)
+scores$all <- ifelse(is.na(scores$d.pitf)==FALSE & is.na(scores$d.da)==FALSE & is.na(scores$d.fh)==FALSE &
+  is.na(scores$d.bmr)==FALSE & is.na(scores$d.dd)==FALSE, 1, 0)
+scores$four <- ifelse(is.na(scores$d.pitf) + is.na(scores$d.da) + is.na(scores$d.fh) + is.na(scores$d.bmr) +
+  is.na(scores$d.dd) <= 1, 1, 0)
+scores$three <- ifelse(is.na(scores$d.pitf) + is.na(scores$d.da) + is.na(scores$d.fh) + is.na(scores$d.bmr) +
+  is.na(scores$d.dd) <= 2, 1, 0)
 
 # Add the Unified Democracy Scores
 uds <- read.csv(paste0(wd, "/data.in/uds_summary.csv"))

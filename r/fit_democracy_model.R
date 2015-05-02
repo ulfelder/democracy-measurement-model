@@ -20,8 +20,13 @@ option_list <- list(
         dest="hyperparams")
     ,make_option(c("--model"), type="character", action="store",
         dest="model")
-    ,make_option(c("--draws"), type="integer", default=100,
+    ## HMC
+    ,make_option(c("--draws"), type="integer", default=1000,
         dest="draws")
+    ,make_option(c("--warmup"), type="integer", default=500,
+        dest="draws")
+    ,make_option(c("--chains"), type="integer", default=4,
+        dest="chains")
     )
 opt <- parse_args(OptionParser(option_list=option_list))
 
@@ -32,6 +37,7 @@ melted <- melt(D, c('country', 'sftgcode', 'year')) %>%
   mutate(sftgcode = factor(sftgcode),
          year = factor(year),
          expert = factor(variable))
+  #filter(sftgcode %in% unlist(strsplit('UKR,GRG,RUS,KYR,ARM,BLR,MLD', ',')))
 
 expert_dat <- with(melted, list(
     country = as.integer(sftgcode),
@@ -45,18 +51,18 @@ expert_dat[['num_countries']] <- max(expert_dat[['country']])
 expert_dat[['num_years']] <- max(expert_dat[['year']])
 expert_dat[['num_experts']] <- max(expert_dat[['expert']])
 
-
 fn <- paste('stan/', opt$model, '.stan', sep='')
 fit <- stan(fn,
             data = expert_dat, 
-            iter = opt$draws,
-            chains = 1)
-
+            #iter = opt$draws,
+            #warmup = opt$warmup,
+            chains = opt$chains)
+            
 ## hyper parameters
 ## country.var <- extract(fit, 'country_var')[['country_var']]
 ## time.var <- extract(fit, 'time_var')[['time_var']]
 
-save(fit, file = paste('cache/', opt$model, 'fit.RData', sep=''))
+save(fit, file = paste('cache/', opt$model, '_fit.RData', sep=''))
 
 ## expert parameters
 expert.biases <- melt(extract(fit, 'expert_bias')[['expert_bias']]) %>%

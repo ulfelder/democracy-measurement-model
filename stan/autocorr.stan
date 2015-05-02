@@ -26,16 +26,16 @@ parameters {
   real<lower=-2,upper=2> expert_bias[num_experts];
 
   // noise with which an expert observes democracy
-  real<lower=0.1,upper=10> expert_var[num_experts];
+  real<lower=0.1,upper=3> expert_var[num_experts];
 
   // a big matrix encoding our ground truth democracy measure
   real democracy[num_countries,num_years];
 
   // variance across countries for y=1
-  real<lower=0> country_var;
+  real<lower=0,upper=20> country_var;
 
   // variance year-to-year changes for countries (y=2 onward)
-  real<lower=0> time_var;
+  real<lower=0,upper=5> time_var;
 }
 
 model {

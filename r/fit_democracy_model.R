@@ -27,17 +27,23 @@ option_list <- list(
         dest="draws")
     ,make_option(c("--chains"), type="integer", default=4,
         dest="chains")
+    ,make_option(c("--example"), action="store_true", default=FALSE)
     )
 opt <- parse_args(OptionParser(option_list=option_list))
 
 D <- fread(opt$infile)
+
+## ALlows us to run a quick version for testing on just a few countries.
+if(opt$example) {
+  D <- D %>%
+    filter(sftgcode %in% unlist(strsplit('UKR,GRG,RUS,KYR,ARM,BLR,MLD', ',')))
+}
 
 melted <- melt(D, c('country', 'sftgcode', 'year')) %>%
   filter(!is.na(value)) %>%
   mutate(sftgcode = factor(sftgcode),
          year = factor(year),
          expert = factor(variable))
-  #filter(sftgcode %in% unlist(strsplit('UKR,GRG,RUS,KYR,ARM,BLR,MLD', ',')))
 
 expert_dat <- with(melted, list(
     country = as.integer(sftgcode),
@@ -53,11 +59,11 @@ expert_dat[['num_experts']] <- max(expert_dat[['expert']])
 
 fn <- paste('stan/', opt$model, '.stan', sep='')
 fit <- stan(fn,
-            data = expert_dat, 
+            data = expert_dat,
             #iter = opt$draws,
             #warmup = opt$warmup,
             chains = opt$chains)
-            
+
 ## hyper parameters
 ## country.var <- extract(fit, 'country_var')[['country_var']]
 ## time.var <- extract(fit, 'time_var')[['time_var']]
@@ -92,4 +98,3 @@ democracy <- melt(extract(fit, 'democracy')[['democracy']]) %>%
             ucl = 1 / (1 + exp(-(mean(value) + 1.96*sd(value)))))
 
 write.csv(democracy, opt$outfile)
-

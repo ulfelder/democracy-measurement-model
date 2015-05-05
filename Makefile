@@ -1,7 +1,10 @@
 Rscript = /usr/local/bin/Rscript
 
 data.out/%_democracy_scores.csv: data.in/democracies.csv
-	$(Rscript) r/fit_democracy_model.R --model=$* --outfile=$@ --infile=$< --hyperparams=data.out/$*_expert_scores.csv --draws=1500 --warmup=500 --chains=4
+	$(Rscript) r/fit_democracy_model.R --model=$* --outfile=$@ --infile=$< --hyperparams=data.out/$*_expert_scores.csv --draws=2000 --warmup=1000 --chains=4
+
+data.out/%_psrf.csv:
+	$(Rscript) r/psrf.R --model=$* --outfile=$@
 
 figs/%_expert_scores.pdf: data.out/%_expert_scores.csv
 	$(Rscript) r/plot_experts.R --outfile=$@ --infile=$<
@@ -17,9 +20,6 @@ figs/iid_country_params.pdf: data.in/democracies.csv
 
 figs/autocorr_params.pdf:
 	$(Rscript) r/plot_autocorr_params.R --outfile=$@
-
-figs/%_psrf.pdf:
-	$(Rscript) r/psrf.R --model=$* --outfile=$@
 
 all: figs/iid_democracy_scores.pdf figs/iid_country_democracy_scores.pdf figs/autocorr_democracy_scores.pdf figs/iid_expert_scores.pdf figs/iid_country_expert_scores.pdf figs/autocorr_expert_scores.pdf
 

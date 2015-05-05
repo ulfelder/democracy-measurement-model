@@ -3,8 +3,7 @@ data {
   int<lower=1> num_obs;
   int<lower=1> num_countries;
   int<lower=1> num_years;
-  
-  
+
   // what the experts have said
   int<lower=0,upper=1> labels[num_obs];
 
@@ -26,7 +25,7 @@ parameters {
   real<lower=-2,upper=2> expert_bias[num_experts];
 
   // noise with which an expert observes democracy
-  real<lower=0.1,upper=10> expert_var[num_experts];
+  real<lower=0.1,upper=3> expert_var[num_experts];
 
   // a big matrix encoding our ground truth democracy measure
   real democracy[num_countries,num_years];
@@ -44,7 +43,7 @@ model {
 
   // now draw experts observations
   for (i in 1:num_obs) {
-  
+
     // expert signal = (truth / variance) + bias
     labels[i] ~ bernoulli_logit(
       (democracy[country[i], year[i]] / expert_var[expert[i]])
@@ -52,4 +51,3 @@ model {
     );
   }
 }
-

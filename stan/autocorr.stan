@@ -3,8 +3,7 @@ data {
   int<lower=1> num_obs;
   int<lower=1> num_countries;
   int<lower=1> num_years;
-  
-  
+
   // what the experts have said
   int<lower=0,upper=1> labels[num_obs];
 
@@ -53,7 +52,7 @@ model {
 
   // now draw experts observations
   for (i in 1:num_obs) {
-  
+
     // expert signal = (truth / variance) + bias
     labels[i] ~ bernoulli_logit(
       (democracy[country[i], year[i]] / expert_var[expert[i]])
@@ -61,4 +60,3 @@ model {
     );
   }
 }
-

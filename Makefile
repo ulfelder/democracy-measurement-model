@@ -1,5 +1,8 @@
 Rscript = /usr/local/bin/Rscript
 
+data.out/%_democracy_scores_example.csv: data.in/democracies.csv
+	$(Rscript) r/fit_democracy_model.R --model=$* --outfile=$@ --infile=$< --hyperparams=data.out/$*_expert_scores.csv --draws=2000 --warmup=1000 --chains=4 --example
+
 data.out/%_democracy_scores.csv: data.in/democracies.csv
 	$(Rscript) r/fit_democracy_model.R --model=$* --outfile=$@ --infile=$< --hyperparams=data.out/$*_expert_scores.csv --draws=2000 --warmup=1000 --chains=4
 

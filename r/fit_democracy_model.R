@@ -58,15 +58,26 @@ expert_dat[['num_years']] <- max(expert_dat[['year']])
 expert_dat[['num_experts']] <- max(expert_dat[['expert']])
 
 fn <- paste('stan/', opt$model, '.stan', sep='')
+
+if (opt$model == 'autocorr4') {
+  mypars <- c('expert_bias', 'expert_var',
+              'democracy', 'time_var')
+} else if (opt$model == 'autocorr5') {
+  mypars <- c('expert_bias', 'democracy', 'time_var')
+} else {
+  ## keep them all
+  mypars <- NA
+}
+
 fit <- stan(fn,
             data = expert_dat,
-            #iter = opt$draws,
-            #warmup = opt$warmup,
-            chains = opt$chains)
+            iter = opt$draws,
+            chains = opt$chains,
+            pars = mypars)
 
-## hyper parameters
-## country.var <- extract(fit, 'country_var')[['country_var']]
-## time.var <- extract(fit, 'time_var')[['time_var']]
+## ## hyper parameters
+## ## country.var <- extract(fit, 'country_var')[['country_var']]
+## ## time.var <- extract(fit, 'time_var')[['time_var']]
 
 save(fit, file = paste('cache/', opt$model, '_fit.RData', sep=''))
 
@@ -78,6 +89,7 @@ expert.biases <- melt(extract(fit, 'expert_bias')[['expert_bias']]) %>%
   summarise(mean = mean(value), se = sd(value)) %>%
   mutate(value = 'bias')
 
+if (opt$model != 'autocorr5') {
 expert.vars <- melt(extract(fit, 'expert_var')[['expert_var']]) %>%
   select(rep = iterations, expert = Var2, value) %>%
   mutate(expert = factor(expert, labels = levels(melted$expert))) %>%
@@ -85,7 +97,10 @@ expert.vars <- melt(extract(fit, 'expert_var')[['expert_var']]) %>%
   summarise(mean = mean(value), se = sd(value)) %>%
   mutate(value = 'variance')
 
-write.csv(rbind(expert.biases, expert.vars), opt$hyperparams)
+  write.csv(rbind(expert.biases, expert.vars), opt$hyperparams)
+} else {
+  write.csv(expert.biases, opt$hyperparams)
+}
 
 ## country democracy time series
 democracy <- melt(extract(fit, 'democracy')[['democracy']]) %>%

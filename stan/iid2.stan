@@ -25,15 +25,13 @@ parameters {
   real<lower=-2,upper=2> expert_bias[num_experts];
 
   // noise with which an expert observes democracy
-  real<lower=0.1,upper=3> expert_var[num_experts];
-
-  real errors[num_obs];
+  real<lower=1,upper=10> expert_var[num_experts];
 
   // a big matrix encoding our ground truth democracy measure
   real democracy[num_countries,num_years];
 
   // democracy mean and variance
-  real democracy_mean;
+  real<lower=-2,upper=2> democracy_mean;
   real<lower=0> democracy_var;
 }
 
@@ -43,13 +41,11 @@ model {
     democracy[c] ~ normal(democracy_mean, democracy_var);
   }
 
-  // now draw experts observations
   for (i in 1:num_obs) {
 
-    // expert error
-    errors[i] ~ normal(expert_bias[expert[i]], expert_var[expert[i]]);
-
-    // expert signal = truth + error
-    labels[i] ~ bernoulli_logit(democracy[country[i], year[i]] + errors[i]);
+    labels[i] ~ bernoulli_logit(
+        (democracy[country[i], year[i]] + expert_bias[expert[i]])
+        * expert_var[expert[i]]
+    );
   }
 }

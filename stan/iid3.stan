@@ -22,39 +22,34 @@ parameters {
   // encodes expert bias
   // <0 underpredicts democracy
   // >0 overpredicts democracy
-  real<lower=-2,upper=2> expert_bias[num_experts];
+  real expert_bias[num_experts];
 
   // noise with which an expert observes democracy
-  real<lower=1,upper=10> expert_var[num_experts];
+  real<lower=0> expert_var[num_experts];
 
   // a big matrix encoding our ground truth democracy measure
   real democracy[num_countries,num_years];
 
-  // variance across countries for y=1
-  real<lower=0,upper=20> country_var;
+  // democracy mean and variance
+  real<lower=-2,upper=2> democracy_mean;
+  real<lower=0> democracy_var;
 
-  // variance year-to-year changes for countries (y=2 onward)
-  real<lower=0,upper=5> time_var;
+  // noise
+  real noise[num_obs];
 }
 
 model {
+  // draw expert bias and variances
+  expert_bias ~ normal(0, 1);
+  expert_var ~ chi_square(1);
+
   // draw the true values for democracy for each country/year
   for (c in 1:num_countries) {
-    // first year
-    democracy[c,1] ~ normal(0, country_var);
-
-    // subsequent years are a random walk
-    // use cauchy to allow higher probability of big jumps
-    for (y in 2:num_years) {
-      democracy[c,y] ~ cauchy(democracy[c,y-1], time_var);
-    }
+    democracy[c] ~ normal(democracy_mean, democracy_var);
   }
 
-  // now draw experts observations
   for (i in 1:num_obs) {
-   labels[i] ~ bernoulli_logit(
-        (democracy[country[i], year[i]] + expert_bias[expert[i]])
-        * expert_var[expert[i]]
-    );
+    noise[i] ~ normal(expert_bias[expert[i]], expert_var[expert[i]]);
+    labels[i] ~ bernoulli_logit(democracy[country[i], year[i]] + noise[i]);
   }
 }

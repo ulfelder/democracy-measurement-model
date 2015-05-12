@@ -19,7 +19,7 @@ Data <- ldply(unlist(strsplit(opt$models, ",")), function(model) {
   df$model <- model
   df
 }) %>%
-  mutate(model = ordered(model, levels = c('iid', 'iid_country', 'autocorr'), labels = c('No model', 'Country-level', 'Autocorrelation')),
+  mutate(model = ordered(model, levels = c('iid4', 'autocorr4'), labels = c('No model', 'Cauchy Random Walk')),
          expert = factor(expert, levels = c('d.polity', 'd.jay', 'd.fh', 'd.mbr', 'd.ddr'), labels = c('PITF', 'DA', 'FH', 'BMR', 'DD')))
 
 p <- ggplot(Data, aes(x = expert, y = mean, ymin = mean - 1.96*se, max = mean + 1.96*se)) +

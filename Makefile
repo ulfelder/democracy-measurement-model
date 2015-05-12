@@ -12,8 +12,8 @@ data.out/%_psrf.csv:
 figs/%_expert_scores.pdf: data.out/%_expert_scores.csv
 	$(Rscript) r/plot_experts.R --outfile=$@ --infile=$<
 
-figs/expert_comparison.pdf: data.out/iid_expert_scores.csv data.out/iid_country_expert_scores.csv data.out/autocorr_expert_scores.csv
-	$(Rscript) r/plot_experts_comparison.R --outfile=$@ --models=iid,autocorr
+figs/expert_comparison.pdf: data.out/iid4_expert_scores.csv data.out/autocorr4_expert_scores.csv
+	$(Rscript) r/plot_experts_comparison.R --outfile=$@ --models=iid4,autocorr4
 
 figs/%_democracy_scores.pdf: data.out/%_democracy_scores.csv
 	$(Rscript) r/plot_democracies.R --outfile=$@ --infile=$< --countries=UKR,GRG,RUS,KYR,ARM,BLR,MLD --start-year=1990

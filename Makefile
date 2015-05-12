@@ -24,6 +24,10 @@ figs/iid_country_params.pdf: data.in/democracies.csv
 figs/autocorr_params.pdf:
 	$(Rscript) r/plot_autocorr_params.R --outfile=$@
 
+figs/%_histogram.pdf:
+	$(Rscript) r/plot_histogram.R --outfile=$@ --infile=data.out/$*_democracy_scores.csv
+
+
 all: figs/iid_democracy_scores.pdf figs/iid_country_democracy_scores.pdf figs/autocorr_democracy_scores.pdf figs/iid_expert_scores.pdf figs/iid_country_expert_scores.pdf figs/autocorr_expert_scores.pdf
 
 clean:

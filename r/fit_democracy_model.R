@@ -21,9 +21,7 @@ option_list <- list(
     ,make_option(c("--model"), type="character", action="store",
         dest="model")
     ## HMC
-    ,make_option(c("--draws"), type="integer", default=1000,
-        dest="draws")
-    ,make_option(c("--warmup"), type="integer", default=500,
+    ,make_option(c("--draws"), type="integer", default=2000,
         dest="draws")
     ,make_option(c("--chains"), type="integer", default=4,
         dest="chains")
